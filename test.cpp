@@ -48,14 +48,15 @@ int main()
 
 	int limit_items = 10000;
 	int items_step = 1000;
-	float limit_false_positive = 1;
-	float false_positive_step = .15;
+	double limit_false_positive = 1;
+	double false_positive_step = .15;
 	
-	for(float j=.0001f; j<= limit_false_positive; j+=false_positive_step)
+	for(double j=.0001; j<= limit_false_positive; j+=false_positive_step)
 	{
 		for(int i=1000; i<= limit_items; i+= items_step)
 		{
 		    test(i, j);
 		}
 	}
+	
 }

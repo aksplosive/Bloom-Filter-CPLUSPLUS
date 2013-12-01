@@ -14,10 +14,10 @@ public:
 	BloomFilter(int capacity, double false_positive_probability)
 	{
 		// SIze of bit array base of the capacity and false_positive_probability
-		int bit_array_size = (int)(- (double)(capacity) * log(false_positive_probability)/ ( log(2) * log(2) ));
+		int bit_array_size = (int)(- (double)(capacity) * log(false_positive_probability)/ ( log(2.0) * log(2.0) ));
 		
 		// Total num of hashes for the false_positive_probability (research work
-		num_of_hashes = (int)((double) bit_array_size * log(2) / capacity);
+		num_of_hashes = (int)((double) bit_array_size * log(2.0) / capacity);
 		
 		// Init bits all with values false
 		bits = std::vector<bool>(bit_array_size, false);

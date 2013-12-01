@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <sstream>  
 #include <stdio.h>
+/* This test inserts 1 to num_of_items into the bloom filter, each time checking if the 
+* number is alread there, if so we have a false positive */
 
 std::string to_string(int i)
 {
@@ -16,52 +18,33 @@ std::string to_string(int i)
 
 int test(int num_of_items, double  prob_of_false_positive)
 {
-	// inits
-	int str_length = 20;
-	std::list<std::string> items;	// these items will be added in the bloom filter
-	std::list<std::string> not_added_items;	// will not be added to the bloom filter
-	BloomFilter bloomFilter = BloomFilter(num_of_items, prob_of_false_positive); // create bloom filter
-	
-	for(int i=0; i<num_of_items; i++)
-	{
-	    // insert numbers (in string form) from 0 to num_of_items-1
-	    items.push_back(to_string(i));
+	// Number of errors (false positive)
+	int errors = 0;	
+	// Initialise the bloom filter with the expected number of items, and the intended false positive
+	BloomFilter bloomFilter = BloomFilter(num_of_items, prob_of_false_positive);
+	std::string num_as_str="";
 
-	    // numbers (num_of_items to 2 * num_of_items -1) will be tested
-	    not_added_items.push_back(to_string(num_of_items+i));
+	for(int i=1; i<=num_of_items; i++)
+	{
+		num_as_str = to_string(i);
+
+		if(bloomFilter.contains(num_as_str))
+		{// False positive
+			errors++;
+		}else
+		{
+			bloomFilter.add(num_as_str);
+		}
 	}
 
-	
-	// Insert items in the bloomFilter
-	for (std::list<std::string>::iterator item_ptr=items.begin(); item_ptr != items.end(); ++item_ptr)
-	{
-	    bloomFilter.add(*item_ptr);
-	}
-	
-	int errors = 0;
-      
 	std::cout<<std::endl;
-	
-	// check if the items which where not added, appear to be in the bloom filter
-	for (std::list<std::string>::iterator item_ptr=not_added_items.begin(); item_ptr != not_added_items.end(); ++item_ptr)
-	{
-	    
-	    // Items is not in the inserted items, but bloom filter contains it (false positive)
-	    if(bloomFilter.contains(*item_ptr))
-	    {
-		// item was not inserted
-		if(std::find(items.begin(), items.end(), *item_ptr) == items.end())
-		  errors += 1;
-	    }
-	    
-	}
-	
+
 	printf("%15f %15d %15d %15f\n", prob_of_false_positive, num_of_items, errors, (double)errors/num_of_items);
 }
 
 int main()
 {
-	printf("%15s %15s %15s %15s \n",  "false positive", "items count", "errors", "error ratio");
+	printf("%15s %15s %15s %15s\n",  "false positive", "items count", "errors", "error ratio");
 
 	int limit_items = 10000;
 	int items_step = 1000;
